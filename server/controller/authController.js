@@ -211,10 +211,64 @@ const authController = {
     verifyEmail: async (req, res) => {
         try {
             const {
-                opt
+                otp
             } = req.body
 
             const email = req.params.email
+
+            const checkotpuser = await UserOTP.findOne({ email: email })
+
+            if(!checkotpuser){
+                return res.json({ Error: "No Recodes found by given Email Address" })
+            }
+
+            const checkotp = await bcrypt.compare(otp, checkotpuser.otp)
+
+            if(!checkotp){
+                return res.json({ Error: "OTP Not Match"})
+            }
+
+            const checkuser = await User.findOne({ email: email })
+
+            if(checkuser.role === 'intern'){
+                const verifyotpintern = await InternInfo.findOneAndUpdate(
+                    { email: email },
+                    { $set: { isEmailVerfy: true }},
+                    { new: true }
+                )
+
+                if(verifyotpintern){
+                    const verifyinternUser = await User.findOneAndUpdate(
+                        { email: email },
+                        { $set: { isEmailVerify: true }},
+                        { new: true }
+                    )
+
+                    if(verifyinternUser){
+                        const deleteotp = await UserOTP.findOneAndDelete({ email: email })
+
+                        if(deleteotp){
+                            return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin"})
+                        }
+                    }
+                }
+            }
+            else if(checkuser.role === 'staff'){
+                const verifyinternUser = await User.findOneAndUpdate(
+                    { email: email },
+                    { $set: { isEmailVerify: true }},
+                    { new: true }
+                )
+
+                if(verifyinternUser){
+                    const deleteotp = await UserOTP.findOneAndDelete({ email: email })
+
+                    if(deleteotp){
+                        return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin"})
+                    }
+                }
+            }                        
+
         }
         catch (err) {
             console.log(err)
