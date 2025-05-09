@@ -5,6 +5,6 @@ const UserActivitySchema = new mongoose.Schema({
     activity: { type: String, required: true }
 }, {timestamps: true });
 
-const UserActivity = mongoose.model('ModelName', UserActivitySchema);
+const UserActivity = mongoose.model('UserActivity', UserActivitySchema);
 
 module.exports = UserActivity;
