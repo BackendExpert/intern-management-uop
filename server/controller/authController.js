@@ -6,6 +6,7 @@ const validator = require('validator')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto');
 const InternInfo = require('../model/InternInfor');
+const UserOTP = require('../model/UserOTP')
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -15,13 +16,72 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+const sendVerificationOTP = async (email, username, userType = 'user') => {
+    const generateOTP = (length = 8) => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let otp = '';
+        for (let i = 0; i < length; i++) {
+            otp += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return otp;
+    };
+
+    const otp = generateOTP();
+    const hashotp = await bcrypt.hash(otp, 10);
+    const newOTP = new UserOTP({ email, otp: hashotp });
+    const resultsaveotp = await newOTP.save();
+
+    if (!resultsaveotp) return { success: false };
+
+    let introLine = '';
+    let waitingInfo = '';
+
+    if (userType === 'intern') {
+        introLine = `Thank you for registering with the University of Peradeniya Intern Management System.`;
+        waitingInfo = `Your account has been successfully placed on the Intern waiting list.`;
+    } else if (userType === 'staff') {
+        introLine = `Thank you for registering with the University of Peradeniya Staff Management System.`;
+        waitingInfo = `Your account is pending verification by university administration.`;
+    } else {
+        introLine = `Thank you for registering with the University of Peradeniya System.`;
+        waitingInfo = `Your account is pending verification.`;
+    }
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Email Verification Required',
+        text: `Dear ${username},
+
+            ${introLine}
+
+            ${waitingInfo} To complete your registration, please verify your email address using the One-Time Password (OTP) provided below:
+
+            🔐 OTP Code: ${otp}
+
+            This OTP is valid for 5 minutes. Please do not share this code with anyone.
+
+            Once your email is verified and your registration is approved by the university administration, you will receive a confirmation email with further instructions.
+
+            If you did not request this registration, please ignore this email.
+
+            Best regards,  
+            University of Peradeniya  
+            ${userType.charAt(0).toUpperCase() + userType.slice(1)} Management System`
+    };
+
+    const mailsent = await transporter.sendMail(mailOptions);
+    return mailsent ? { success: true } : { success: false };
+};
+
+
 const authController = {
-    signUp: async(req, res) => {
-        try{
+    signUp: async (req, res) => {
+        try {
             const {
                 username,
                 email,
-                password,                
+                password,
             } = req.body
 
             const checkuser = await User.findOne({
@@ -31,8 +91,8 @@ const authController = {
                 ]
             })
 
-            if(checkuser){
-                return res.json({ Error: "User Already Exists"})
+            if (checkuser) {
+                return res.json({ Error: "User Already Exists" })
             }
 
             const hashpass = await bcrypt.hash(password, 10)
@@ -45,20 +105,25 @@ const authController = {
 
             const resultnewUser = await newUser.save()
 
-            if(resultnewUser){
-                return res.json({ Status: "Success", Message: "User Regisatation Successfull"})
+            if (resultnewUser) {
+                const otpResult = await sendVerificationOTP(email, username, 'staff');
+                if (otpResult.success) {
+                    return res.json({ Status: "Success", Message: "Now You are in Waiting List Wait for Approve by Admin" })
+                } else {
+                    return res.json({ Error: "Internal Server Error while Sending Email" })
+                }
             }
-            else{
-                return res.json({ Error: "Internal Server Error..."})
+            else {
+                return res.json({ Error: "Internal Server Error..." })
             }
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
     },
 
-    createStudent: async(req, res) => {
-        try{
+    createStudent: async (req, res) => {
+        try {
             const {
                 email,
                 username,
@@ -78,7 +143,7 @@ const authController = {
 
             const checkintern = await InternInfo.findOne({ email: email })
 
-            if(checkintern){
+            if (checkintern) {
                 return res.json({ Error: "Intern/Training already exists in the system" })
             }
 
@@ -89,8 +154,8 @@ const authController = {
                 ]
             })
 
-            if(checkuser){
-                return res.json({ Error: "User Already Exists"})
+            if (checkuser) {
+                return res.json({ Error: "User Already Exists" })
             }
 
             const newIntern = new InternInfo({
@@ -109,7 +174,7 @@ const authController = {
 
             const resultnewIntern = await newIntern.save()
 
-            if(resultnewIntern){
+            if (resultnewIntern) {
                 const hashpass = await bcrypt.hash(password, 10)
 
                 const newInternUser = new User({
@@ -121,20 +186,37 @@ const authController = {
 
                 const resultnewInternUser = await newInternUser.save()
 
-                if(resultnewInternUser){
-                    return res.json({ Status: "Success", Message: "Intern Account Created Successful now Verify your email"})
+                if (resultnewInternUser) {
+                    const otpResult = await sendVerificationOTP(email, username, 'intern');
+                    if (otpResult.success) {
+                        return res.json({ Status: "Success", Message: "Now You are in Waiting List Wait for Approve by Admin" })
+                    } else {
+                        return res.json({ Error: "Internal Server Error while Sending Email" })
+                    }
                 }
-                else{
-                    return res.json({ Error: "Internal Server Error..."})
+                else {
+                    return res.json({ Error: "Internal Server Error..." })
                 }
             }
-            else{
-                return res.json({ Error: "Internal Server Error while creating new Intern Account"})
+            else {
+                return res.json({ Error: "Internal Server Error while creating new Intern Account" })
             }
-
 
         }
-        catch(err){
+        catch (err) {
+            console.log(err)
+        }
+    },
+
+    verifyEmail: async (req, res) => {
+        try {
+            const {
+                opt
+            } = req.body
+
+            const email = req.params.email
+        }
+        catch (err) {
             console.log(err)
         }
     }
