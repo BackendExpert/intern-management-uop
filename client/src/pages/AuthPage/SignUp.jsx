@@ -20,6 +20,7 @@ const SignUp = () => {
     };
 
     const headleSignUp = async (e) => {
+        e.preventDefault();
         try {
             const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/signUp', signupdata)
                 .then(res => {
