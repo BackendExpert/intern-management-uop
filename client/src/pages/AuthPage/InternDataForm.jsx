@@ -11,7 +11,7 @@ import secureLocalStorage from 'react-secure-storage'
 
 
 const InternDataForm = () => {
-    const navigate = useNavigate()    
+    const navigate = useNavigate()
     const [stddata, setstddata] = useState({
         email: '',
         username: '',
@@ -71,8 +71,8 @@ const InternDataForm = () => {
                 .then(res => {
                     if (res.data.Status === 'Success') {
                         alert(res.data.Message)
-                        secureLocalStorage.setItem("VerifyEmail", formData.email)
-                        navigate('/VerifyEmail', {replace: true})
+                        secureLocalStorage.setItem("VerifyEmail", formData.get("email"));
+                        navigate('/VerifyEmail', { replace: true })
                     }
                     else {
                         alert(res.data.Error)

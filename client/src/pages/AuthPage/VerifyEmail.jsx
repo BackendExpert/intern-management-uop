@@ -30,6 +30,7 @@ const VerifyEmail = () => {
                     if (res.data.Status === "Success") {
                         alert(res.data.Message)
                         navigate('/', { replace: true })
+                        localStorage.clear()
                     }
                     else {
                         alert(res.data.Error)
