@@ -218,57 +218,88 @@ const authController = {
 
             const checkotpuser = await UserOTP.findOne({ email: email })
 
-            if(!checkotpuser){
+            if (!checkotpuser) {
                 return res.json({ Error: "No Recodes found by given Email Address" })
             }
 
             const checkotp = await bcrypt.compare(otp, checkotpuser.otp)
 
-            if(!checkotp){
-                return res.json({ Error: "OTP Not Match"})
+            if (!checkotp) {
+                return res.json({ Error: "OTP Not Match" })
             }
 
             const checkuser = await User.findOne({ email: email })
 
-            if(checkuser.role === 'intern'){
+            if (checkuser.role === 'intern') {
                 const verifyotpintern = await InternInfo.findOneAndUpdate(
                     { email: email },
-                    { $set: { isEmailVerfy: true }},
+                    { $set: { isEmailVerfy: true } },
                     { new: true }
                 )
 
-                if(verifyotpintern){
+                if (verifyotpintern) {
                     const verifyinternUser = await User.findOneAndUpdate(
                         { email: email },
-                        { $set: { isEmailVerify: true }},
+                        { $set: { isEmailVerify: true } },
                         { new: true }
                     )
 
-                    if(verifyinternUser){
+                    if (verifyinternUser) {
                         const deleteotp = await UserOTP.findOneAndDelete({ email: email })
 
-                        if(deleteotp){
-                            return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin"})
+                        if (deleteotp) {
+                            return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin" })
                         }
                     }
                 }
             }
-            else if(checkuser.role === 'staff'){
+            else if (checkuser.role === 'staff') {
                 const verifyinternUser = await User.findOneAndUpdate(
                     { email: email },
-                    { $set: { isEmailVerify: true }},
+                    { $set: { isEmailVerify: true } },
                     { new: true }
                 )
 
-                if(verifyinternUser){
+                if (verifyinternUser) {
                     const deleteotp = await UserOTP.findOneAndDelete({ email: email })
 
-                    if(deleteotp){
-                        return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin"})
+                    if (deleteotp) {
+                        return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin" })
                     }
                 }
-            }                        
+            }
 
+        }
+        catch (err) {
+            console.log(err)
+        }
+    },
+
+    signin: async (req, res) => {
+        try {
+            const {
+                email,
+                password
+            } = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            if (!checkuser) {
+                return res.json({ Error: "User Cannot find by Given Eamil Address" })
+            }
+
+            const checkpass = await bcrypt.compare(password, checkuser.password)
+
+            if (!checkpass) {
+                return res.json({ Error: "Password Not Match " })
+            }
+
+            if (checkuser.isActive === false) {
+                return res.json({ Error: "This Account is Not Active" })
+            }
+
+            const token = jwt.sign({ id: checkuser._id, role: checkuser.role, user: checkuser }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            return res.json({ Status: "Success", Token: token })
         }
         catch (err) {
             console.log(err)
