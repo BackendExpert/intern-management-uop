@@ -3,8 +3,11 @@ import React from 'react'
 import { useState } from 'react'
 import DefultInput from '../../components/Forms/DefultInput';
 import DefultButton from '../../components/Buttons/DefultButton';
+import secureLocalStorage from 'react-secure-storage';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+    const navigate = useNavigate()
     const [signupdata, setsignupdata] = useState({
         username: '',
         email: '',
@@ -26,6 +29,8 @@ const SignUp = () => {
                 .then(res => {
                     if (res.data.Status === "Success") {
                         alert(res.data.Message)
+                        secureLocalStorage.setItem("VerifyEmail", signupdata.email)
+                        navigate('/VerifyEmail', {replace: true})
                     }
                     else {
                         alert(res.data.Error)
