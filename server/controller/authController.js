@@ -352,11 +352,11 @@ const authController = {
 
                 const mailsent = await transporter.sendMail(mailOptions);
 
-                if(mailsent){
-                    return res.json({ Status: "Success", Message: "OTP (One TIme Password) is send to your emal address"})
+                if (mailsent) {
+                    return res.json({ Status: "Success", Message: "OTP (One TIme Password) is send to your emal address" })
                 }
-                else{
-                    return res.json({ Error: "Error While Sending Email"})
+                else {
+                    return res.json({ Error: "Error While Sending Email" })
                 }
 
             }
@@ -370,8 +370,8 @@ const authController = {
         }
     },
 
-    verifypassotp: async(req, res) => {
-        try{
+    verifypassotp: async (req, res) => {
+        try {
             const {
                 email,
                 otp
@@ -379,26 +379,75 @@ const authController = {
 
             const checkuser = await User.findOne({ email: email })
 
-            if(!checkuser){
-                return res.json({ Error: "No User found by Given Email"})
+            if (!checkuser) {
+                return res.json({ Error: "No User found by Given Email" })
             }
 
             const checkotp = await UserOTP.findOne({ email: email })
 
-            if(!checkotp){
-                return res.json({ Error: "The OTP not Match.."})
+            if (!checkotp) {
+                return res.json({ Error: "The OTP not Match.." })
             }
-            
+
             const successdeleteotp = await UserOTP.findOneAndDelete({ email: email })
 
-            if(successdeleteotp){
-                return res.json({ Status: "Success", Message: "OTP Verify Success"})
+            if (successdeleteotp) {
+                const token = jwt.sign(
+                    { id: checkuser._id, role: checkuser.role, user: checkuser },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '10m' }
+                );
+                return res.json({ Status: "Success", Message: "OTP Verify Success", token: token })
             }
-            else{
-                return res.json({ Error: "Internal Server Error While Verify OTP"})
+            else {
+                return res.json({ Error: "Internal Server Error While Verify OTP" })
             }
         }
-        catch(err){
+        catch (err) {
+            console.log(err)
+        }
+    },
+
+    updatepass: async (req, res) => {
+        try {
+            const token = req.headers.authorization?.split(" ")[1];
+            if (!token) {
+                return res.json({ Error: "Access Denied. No Token Provided." });
+            }
+
+            let decoded;
+            try {
+                decoded = jwt.verify(token, process.env.JWT_SECRET);
+            } catch (err) {
+                return res.json({ Error: "Invalid or Expired Token." });
+            }
+
+            const email = req.params.email
+
+            const {
+                newpass,
+            } = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            const hashnewpass = await bcrypt.hash(newpass, 10)
+
+            if (hashnewpass) {
+                const updatenewpass = await User.findOneAndUpdate(
+                    { email: email },
+                    { $set: { password: hashnewpass } },
+                    { new: true }
+                )
+
+                if (updatenewpass) {
+                    return res.json({ Status: "Success", Message: "Password Update Successfull" })
+                }
+                else {
+                    return res.json({ Error: "Internal Server Error while Updating the Password" })
+                }
+            }
+        }
+        catch (err) {
             console.log(err)
         }
     }
