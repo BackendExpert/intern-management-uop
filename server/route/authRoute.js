@@ -11,4 +11,8 @@ router.post('/createIntern', upload.fields([
 ]), authController.createStudent)
 router.post('/verifyEmail/:email', authController.verifyEmail)
 
+router.post('/signin', authController.signin)
+router.post('/forgetpass', authController.forgetpass)
+
+
 module.exports = router;
