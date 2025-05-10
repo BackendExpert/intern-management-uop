@@ -3,7 +3,7 @@ import React from 'react'
 const DateInput = ({ label, name, value, onChange, placeholder, required = false }) => {
     return (
         <div className="mb-6">
-            <label htmlFor={name} className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor={name} className="block text-sm font-semibold text-gray-700">
                 {label}
             </label>
             <input
