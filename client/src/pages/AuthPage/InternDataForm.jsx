@@ -59,15 +59,19 @@ const InternDataForm = () => {
         formData.append('cv', stddata.cv);
 
         try {
-            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/createIntern', formData)
-            .then(res => {
-                if(res.data.Status === 'Success'){
-                    alert(res.data.Message)
-                }
-                else{
-                    alert(res.data.Error)
-                }
+            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/createIntern', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             })
+                .then(res => {
+                    if (res.data.Status === 'Success') {
+                        alert(res.data.Message)
+                    }
+                    else {
+                        alert(res.data.Error)
+                    }
+                })
         }
         catch (err) {
             console.log(err)
