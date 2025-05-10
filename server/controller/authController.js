@@ -370,7 +370,39 @@ const authController = {
         }
     },
 
-    
+    verifypassotp: async(req, res) => {
+        try{
+            const {
+                email,
+                otp
+            } = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            if(!checkuser){
+                return res.json({ Error: "No User found by Given Email"})
+            }
+
+            const checkotp = await UserOTP.findOne({ email: email })
+
+            if(!checkotp){
+                return res.json({ Error: "The OTP not Match.."})
+            }
+            
+            const successdeleteotp = await UserOTP.findOneAndDelete({ email: email })
+
+            if(successdeleteotp){
+                return res.json({ Status: "Success", Message: "OTP Verify Success"})
+            }
+            else{
+                return res.json({ Error: "Internal Server Error While Verify OTP"})
+            }
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+
 };
 
 module.exports = authController;

@@ -13,6 +13,6 @@ router.post('/verifyEmail/:email', authController.verifyEmail)
 
 router.post('/signin', authController.signin)
 router.post('/forgetpass', authController.forgetpass)
-
+router.post('/verifyotp', authController.verifypassotp)
 
 module.exports = router;
