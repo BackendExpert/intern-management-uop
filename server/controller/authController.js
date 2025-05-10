@@ -422,8 +422,6 @@ const authController = {
                 return res.json({ Error: "Invalid or Expired Token." });
             }
 
-            const email = req.params.email
-
             const {
                 newpass,
             } = req.body

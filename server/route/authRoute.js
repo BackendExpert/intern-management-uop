@@ -9,10 +9,11 @@ router.post('/createIntern', upload.fields([
     { name: 'nic_copy', maxCount: 1 },
     { name: 'cv', maxCount: 1 }
 ]), authController.createStudent)
-router.post('/verifyEmail/:email', authController.verifyEmail)
 
+router.post('/verifyEmail/:email', authController.verifyEmail)
 router.post('/signin', authController.signin)
 router.post('/forgetpass', authController.forgetpass)
 router.post('/verifyotp', authController.verifypassotp)
+router.post('/updatepass', authController.updatepass)
 
 module.exports = router;
