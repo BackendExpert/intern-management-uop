@@ -304,6 +304,70 @@ const authController = {
         catch (err) {
             console.log(err)
         }
+    },
+
+    forgetpass: async (req, res) => {
+        try {
+            const email = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            if (checkuser) {
+                return res.json({ Error: "No User found by given Email Address" })
+            }
+
+            const PassResutOTPGen = (length = 8) => {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+                let otp = '';
+                for (let i = 0; i < length; i++) {
+                    otp += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return otp;
+            };
+
+            const passotp = PassResutOTPGen();
+            const hashotp = await bcrypt.hash(passotp, 10);
+            const newOTP = new UserOTP({ email, otp: hashotp });
+            const resultsaveotppass = await newOTP.save();
+
+            if (resultsaveotppass) {
+                const mailOptions = {
+                    from: process.env.EMAIL_USER,
+                    to: email,
+                    subject: 'Password Reset',
+                    text: `Dear ${email},
+
+                        We received a request to reset the password for your account on the University of Peradeniya Intern Management System.
+
+                        🔐 OTP Code for Password Reset: ${passotp}
+
+                        This OTP is valid for 5 minutes. Please do not share this code with anyone.
+
+                        If you did not request a password reset, please ignore this email. Your account will remain secure.
+
+                        Best regards,  
+                        University of Peradeniya  
+                        Intern Management System`
+                };
+
+                const mailsent = await transporter.sendMail(mailOptions);
+
+                if(mailsent){
+                    return res.json({ Status: "Success", Message: "OTP (One TIme Password) is send to your emal address"})
+                }
+                else{
+                    return res.json({ Error: "Error While Sending Email"})
+                }
+
+            }
+            else {
+                return res.json({ Error: "Internal Server Error" })
+            }
+
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
 };
 
