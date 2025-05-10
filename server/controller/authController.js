@@ -218,62 +218,238 @@ const authController = {
 
             const checkotpuser = await UserOTP.findOne({ email: email })
 
-            if(!checkotpuser){
+            if (!checkotpuser) {
                 return res.json({ Error: "No Recodes found by given Email Address" })
             }
 
             const checkotp = await bcrypt.compare(otp, checkotpuser.otp)
 
-            if(!checkotp){
-                return res.json({ Error: "OTP Not Match"})
+            if (!checkotp) {
+                return res.json({ Error: "OTP Not Match" })
             }
 
             const checkuser = await User.findOne({ email: email })
 
-            if(checkuser.role === 'intern'){
+            if (checkuser.role === 'intern') {
                 const verifyotpintern = await InternInfo.findOneAndUpdate(
                     { email: email },
-                    { $set: { isEmailVerfy: true }},
+                    { $set: { isEmailVerfy: true } },
                     { new: true }
                 )
 
-                if(verifyotpintern){
+                if (verifyotpintern) {
                     const verifyinternUser = await User.findOneAndUpdate(
                         { email: email },
-                        { $set: { isEmailVerify: true }},
+                        { $set: { isEmailVerify: true } },
                         { new: true }
                     )
 
-                    if(verifyinternUser){
+                    if (verifyinternUser) {
                         const deleteotp = await UserOTP.findOneAndDelete({ email: email })
 
-                        if(deleteotp){
-                            return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin"})
+                        if (deleteotp) {
+                            return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin" })
                         }
                     }
                 }
             }
-            else if(checkuser.role === 'staff'){
+            else if (checkuser.role === 'staff') {
                 const verifyinternUser = await User.findOneAndUpdate(
                     { email: email },
-                    { $set: { isEmailVerify: true }},
+                    { $set: { isEmailVerify: true } },
                     { new: true }
                 )
 
-                if(verifyinternUser){
+                if (verifyinternUser) {
                     const deleteotp = await UserOTP.findOneAndDelete({ email: email })
 
-                    if(deleteotp){
-                        return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin"})
+                    if (deleteotp) {
+                        return res.json({ Status: "Success", Message: "Email Verification Success, Wait of Approve by Admin" })
                     }
                 }
-            }                        
+            }
 
         }
         catch (err) {
             console.log(err)
         }
+    },
+
+    signin: async (req, res) => {
+        try {
+            const {
+                email,
+                password
+            } = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            if (!checkuser) {
+                return res.json({ Error: "User Cannot find by Given Eamil Address" })
+            }
+
+            const checkpass = await bcrypt.compare(password, checkuser.password)
+
+            if (!checkpass) {
+                return res.json({ Error: "Password Not Match " })
+            }
+
+            if (checkuser.isActive === false) {
+                return res.json({ Error: "This Account is Not Active" })
+            }
+
+            const token = jwt.sign({ id: checkuser._id, role: checkuser.role, user: checkuser }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            return res.json({ Status: "Success", Token: token })
+        }
+        catch (err) {
+            console.log(err)
+        }
+    },
+
+    forgetpass: async (req, res) => {
+        try {
+            const email = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            if (checkuser) {
+                return res.json({ Error: "No User found by given Email Address" })
+            }
+
+            const PassResutOTPGen = (length = 8) => {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+                let otp = '';
+                for (let i = 0; i < length; i++) {
+                    otp += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return otp;
+            };
+
+            const passotp = PassResutOTPGen();
+            const hashotp = await bcrypt.hash(passotp, 10);
+            const newOTP = new UserOTP({ email, otp: hashotp });
+            const resultsaveotppass = await newOTP.save();
+
+            if (resultsaveotppass) {
+                const mailOptions = {
+                    from: process.env.EMAIL_USER,
+                    to: email,
+                    subject: 'Password Reset',
+                    text: `Dear ${email},
+
+                        We received a request to reset the password for your account on the University of Peradeniya Intern Management System.
+
+                        🔐 OTP Code for Password Reset: ${passotp}
+
+                        This OTP is valid for 5 minutes. Please do not share this code with anyone.
+
+                        If you did not request a password reset, please ignore this email. Your account will remain secure.
+
+                        Best regards,  
+                        University of Peradeniya  
+                        Intern Management System`
+                };
+
+                const mailsent = await transporter.sendMail(mailOptions);
+
+                if (mailsent) {
+                    return res.json({ Status: "Success", Message: "OTP (One TIme Password) is send to your emal address" })
+                }
+                else {
+                    return res.json({ Error: "Error While Sending Email" })
+                }
+
+            }
+            else {
+                return res.json({ Error: "Internal Server Error" })
+            }
+
+        }
+        catch (err) {
+            console.log(err)
+        }
+    },
+
+    verifypassotp: async (req, res) => {
+        try {
+            const {
+                email,
+                otp
+            } = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            if (!checkuser) {
+                return res.json({ Error: "No User found by Given Email" })
+            }
+
+            const checkotp = await UserOTP.findOne({ email: email })
+
+            if (!checkotp) {
+                return res.json({ Error: "The OTP not Match.." })
+            }
+
+            const successdeleteotp = await UserOTP.findOneAndDelete({ email: email })
+
+            if (successdeleteotp) {
+                const token = jwt.sign(
+                    { id: checkuser._id, role: checkuser.role, user: checkuser },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '10m' }
+                );
+                return res.json({ Status: "Success", Message: "OTP Verify Success", token: token })
+            }
+            else {
+                return res.json({ Error: "Internal Server Error While Verify OTP" })
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+    },
+
+    updatepass: async (req, res) => {
+        try {
+            const token = req.headers.authorization?.split(" ")[1];
+            if (!token) {
+                return res.json({ Error: "Access Denied. No Token Provided." });
+            }
+
+            let decoded;
+            try {
+                decoded = jwt.verify(token, process.env.JWT_SECRET);
+            } catch (err) {
+                return res.json({ Error: "Invalid or Expired Token." });
+            }
+
+            const {
+                newpass,
+            } = req.body
+
+            const checkuser = await User.findOne({ email: email })
+
+            const hashnewpass = await bcrypt.hash(newpass, 10)
+
+            if (hashnewpass) {
+                const updatenewpass = await User.findOneAndUpdate(
+                    { email: email },
+                    { $set: { password: hashnewpass } },
+                    { new: true }
+                )
+
+                if (updatenewpass) {
+                    return res.json({ Status: "Success", Message: "Password Update Successfull" })
+                }
+                else {
+                    return res.json({ Error: "Internal Server Error while Updating the Password" })
+                }
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
+
 };
 
 module.exports = authController;
