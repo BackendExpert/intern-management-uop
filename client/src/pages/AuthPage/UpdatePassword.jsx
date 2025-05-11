@@ -25,7 +25,11 @@ const UpdatePassword = () => {
     const headleUpdatePass = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/forgetpass', updatepass)
+            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/forgetpass', updatepass, {
+                headers: {
+                    'Authorization': `Bearer ${EmailVerify}`,
+                },
+            })
         }
         catch (err) {
             console.log(err)
