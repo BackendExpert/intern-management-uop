@@ -299,7 +299,7 @@ const authController = {
             }
 
             const token = jwt.sign({ id: checkuser._id, role: checkuser.role, user: checkuser }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            return res.json({ Status: "Success", Token: token })
+            return res.json({ Status: "Success", Token: token, Message: "SignIn Success" })
         }
         catch (err) {
             console.log(err)
@@ -327,9 +327,12 @@ const authController = {
 
             const passotp = PassResutOTPGen();
             const hashotp = await bcrypt.hash(passotp, 10);
-            const newOTP = new UserOTP({ email, otp: hashotp });
-            const resultsaveotppass = await newOTP.save();
-
+            const resultsaveotppass = await UserOTP.findOneAndUpdate(
+                { email },
+                { $set: { otp: hashotp } },
+                { upsert: true, new: true } 
+            );
+            
             if (resultsaveotppass) {
                 const mailOptions = {
                     from: process.env.EMAIL_USER,
