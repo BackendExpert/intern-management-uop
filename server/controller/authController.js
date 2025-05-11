@@ -299,7 +299,7 @@ const authController = {
             }
 
             const token = jwt.sign({ id: checkuser._id, role: checkuser.role, user: checkuser }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            return res.json({ Status: "Success", Token: token })
+            return res.json({ Status: "Success", Token: token, Message: "SignIn Success" })
         }
         catch (err) {
             console.log(err)

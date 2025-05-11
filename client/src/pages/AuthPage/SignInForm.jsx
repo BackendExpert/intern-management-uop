@@ -28,7 +28,7 @@ const SignInForm = () => {
                 .then(res => {
                     if (res.data.Status === "Success") {
                         alert(res.data.Message)
-                        localStorage.setItem('login', res.data.token)
+                        localStorage.setItem('login', res.data.Token)
                         navigate('/Dashboard/Home', { replace: true })
                     }
                     else {
