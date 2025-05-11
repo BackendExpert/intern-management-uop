@@ -12,6 +12,8 @@ router.post('/createIntern', upload.fields([
 
 router.post('/verifyEmail/:email', authController.verifyEmail)
 router.post('/signin', authController.signin)
+
+
 router.post('/forgetpass', authController.forgetpass)
 router.post('/verifyotp', authController.verifypassotp)
 router.post('/updatepass', authController.updatepass)
