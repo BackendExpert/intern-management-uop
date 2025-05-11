@@ -35,9 +35,9 @@ const dashsidedata = [
     },
     {
         id: 4,
-        name: "Training Schedules",
+        name: "Projects",
         icon: BsCalendarCheck,
-        link: '/Dashboard/Schedules'
+        link: '/Dashboard/Projects'
     },
     {
         id: 5,
