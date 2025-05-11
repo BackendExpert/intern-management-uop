@@ -78,7 +78,7 @@ const SignInForm = () => {
                     </div>
                 </form>
                 <div className="">
-                    <p className="text-gray-500"><a href="/" className='text-blue-500 duration-500 hover:underline font-semibold'>Forget Password</a></p>
+                    <p className="text-gray-500"><a href="/Forgetpass" className='text-blue-500 duration-500 hover:underline font-semibold'>Forget Password</a></p>
                 </div>
 
             </div>
