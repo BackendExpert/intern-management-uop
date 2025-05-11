@@ -6,7 +6,7 @@ import uoplogo from '../../assets/uoplogo.png'
 
 const DashSide = () => {
     const [activeMenu, setActiveMenu] = useState(1);
-    const username = secureLocalStorage.getItem('loginU');
+    const username = secureLocalStorage.getItem('LoginU');
     const role = secureLocalStorage.getItem('loginR');
 
     useEffect(() => {
@@ -26,6 +26,9 @@ const DashSide = () => {
             <div className="text-center mb-6">
                 {/* <h1 className="text-3xl font-extrabold text-sky-500 tracking-wide">UniExam Pro</h1> */}
                 <img src={uoplogo} alt="" />
+            </div>
+            <div className="text-center mb-6">
+                <h1 className="text-sm mt-2 font-extrabold text-sky-500 tracking-wide">Intern and Trainee Monitoring System</h1>
             </div>
 
             <div className="flex items-center mb-6 p-4 bg-sky-100 text-sky-700 rounded-2xl shadow-inner">

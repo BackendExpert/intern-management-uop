@@ -5,7 +5,7 @@ import secureLocalStorage from 'react-secure-storage';
 const DashNav = () => {
     const [menu, setMenu] = useState(false);
     const menuRef = useRef(null);
-    const username = secureLocalStorage.getItem('loginU');
+    const username = secureLocalStorage.getItem('LoginU');
     const role = secureLocalStorage.getItem('loginR');
 
     const toggleMenu = () => setMenu(!menu);

@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react'
@@ -28,7 +29,14 @@ const SignInForm = () => {
                 .then(res => {
                     if (res.data.Status === "Success") {
                         alert(res.data.Message)
-                        localStorage.setItem('login', res.data.Token)
+                        const token = res.data.Token;
+                        localStorage.setItem('login', token);
+
+                        const decoded = jwtDecode(token);
+
+                        secureLocalStorage.setItem('loginR', decoded.role);
+                        secureLocalStorage.setItem('LoginE', decoded.user.email);
+                        secureLocalStorage.setItem('LoginU', decoded.user.username);
                         navigate('/Dashboard/Home', { replace: true })
                     }
                     else {
@@ -79,9 +87,9 @@ const SignInForm = () => {
                         />
                     </div>
                 </form>
-                <div className="">
-                    <p className="text-gray-500"><a href="/Forgetpass" className='text-blue-500 duration-500 hover:underline font-semibold'>Forget Password</a></p>
-                </div>
+                <p className="text-gray-500">
+                    <a href="/Forgetpass" className="text-blue-500 duration-500 hover:underline font-semibold">Forget Password</a>
+                </p>
 
             </div>
         </div>
