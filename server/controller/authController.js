@@ -308,11 +308,11 @@ const authController = {
 
     forgetpass: async (req, res) => {
         try {
-            const email = req.body
+            const { email } = req.body
 
             const checkuser = await User.findOne({ email: email })
 
-            if (checkuser) {
+            if (!checkuser) {
                 return res.json({ Error: "No User found by given Email Address" })
             }
 
@@ -393,9 +393,9 @@ const authController = {
 
             if (successdeleteotp) {
                 const token = jwt.sign(
-                    { id: checkuser._id, role: checkuser.role, user: checkuser },
+                    { email: checkuser.email },
                     process.env.JWT_SECRET,
-                    { expiresIn: '10m' }
+                    { expiresIn: "5m" }
                 );
                 return res.json({ Status: "Success", Message: "OTP Verify Success", token: token })
             }
@@ -426,13 +426,16 @@ const authController = {
                 newpass,
             } = req.body
 
-            const checkuser = await User.findOne({ email: email })
+            // console.log(decoded)
+            // console.log(decoded.email)
+
+            const checkuser = await User.findOne({ email: decoded.email })
 
             const hashnewpass = await bcrypt.hash(newpass, 10)
 
             if (hashnewpass) {
                 const updatenewpass = await User.findOneAndUpdate(
-                    { email: email },
+                    { email: decoded.email },
                     { $set: { password: hashnewpass } },
                     { new: true }
                 )
