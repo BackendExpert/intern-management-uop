@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import secureLocalStorage from 'react-secure-storage';
 import { dashsidedata } from './DashSideMenu';
 import uoplogo from '../../assets/uoplogo.png'
+import userlogo from '../../assets/BlueUser.png'
 
 const DashSide = () => {
     const [activeMenu, setActiveMenu] = useState(1);
@@ -20,7 +21,7 @@ const DashSide = () => {
     };
 
     return (
-        <div className="bg-white text-slate-800 min-h-screen p-6 shadow-md xl:rounded-r-3xl border-r border-gray-200
+        <div className="bg-white text-slate-800 min-h-screen p-6 shadow-md border-r border-gray-200
                 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-blue-100 hover:scrollbar-thumb-blue-600 transition-all duration-300">
 
             <div className="text-center mb-6">
@@ -33,7 +34,7 @@ const DashSide = () => {
 
             <div className="flex items-center mb-6 p-4 bg-sky-100 text-sky-700 rounded-2xl shadow-inner">
                 <img
-                    src="https://avatars.githubusercontent.com/u/138636749?v=4"
+                    src={userlogo}
                     alt="User"
                     className="h-12 w-12 rounded-full border-2 border-sky-400 shadow"
                 />

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaUser, FaCog, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
 import secureLocalStorage from 'react-secure-storage';
+import userlogo from '../../assets/BlueUser.png'
 
 const DashNav = () => {
     const [menu, setMenu] = useState(false);
@@ -33,7 +34,7 @@ const DashNav = () => {
                 <div className="flex items-center gap-4">
                     <div className="relative cursor-pointer" onClick={toggleMenu}>
                         <img
-                            src="https://avatars.githubusercontent.com/u/138636749?v=4"
+                            src={userlogo}
                             alt="profile"
                             className="h-10 w-10 rounded-full border-2 border-emerald-300 shadow"
                         />
@@ -47,7 +48,7 @@ const DashNav = () => {
                         >
                             <div className="flex items-center gap-4 p-4 border-b border-gray-100">
                                 <img
-                                    src="https://avatars.githubusercontent.com/u/138636749?v=4"
+                                    src={userlogo}
                                     alt="User"
                                     className="h-10 w-10 rounded-full border"
                                 />
