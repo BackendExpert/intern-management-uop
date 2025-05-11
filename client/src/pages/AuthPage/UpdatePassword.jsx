@@ -30,6 +30,16 @@ const UpdatePassword = () => {
                     'Authorization': `Bearer ${EmailVerify}`,
                 },
             })
+            .then( res => {
+                if(res.data.Status === "Success"){
+                    alert(res.data.Message)
+                    localStorage.clear()
+                    navigate('/', {replace: true})
+                }
+                else{
+                    alert(res.data.Error)
+                }
+            })
         }
         catch (err) {
             console.log(err)
