@@ -42,7 +42,7 @@ const VerifyPassOtp = () => {
         <div className='bg-gray-200 min-h-screen flex items-center justify-center py-10 px-4'>
             <div className="max-w-2xl w-full bg-white p-10 rounded-2xl shadow-2xl border border-gray-300">
                 <div className="text-center text-gray-500">
-                    <h1 className="text-xl font-semibold uppercase">Registation</h1>
+                    <h1 className="text-xl font-semibold uppercase">Verify OTP</h1>
                 </div>
 
                 <div className="my-4">
