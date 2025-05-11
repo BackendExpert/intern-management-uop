@@ -327,9 +327,12 @@ const authController = {
 
             const passotp = PassResutOTPGen();
             const hashotp = await bcrypt.hash(passotp, 10);
-            const newOTP = new UserOTP({ email, otp: hashotp });
-            const resultsaveotppass = await newOTP.save();
-
+            const resultsaveotppass = await UserOTP.findOneAndUpdate(
+                { email },
+                { $set: { otp: hashotp } },
+                { upsert: true, new: true } 
+            );
+            
             if (resultsaveotppass) {
                 const mailOptions = {
                     from: process.env.EMAIL_USER,

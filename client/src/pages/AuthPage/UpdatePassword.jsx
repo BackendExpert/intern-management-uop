@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import DefultInput from '../../components/Forms/DefultInput'
 import DefultButton from '../../components/Buttons/DefultButton'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 
 const UpdatePassword = () => {
@@ -25,7 +26,7 @@ const UpdatePassword = () => {
     const headleUpdatePass = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/forgetpass', updatepass, {
+            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/updatepass', updatepass, {
                 headers: {
                     'Authorization': `Bearer ${EmailVerify}`,
                 },
@@ -46,7 +47,7 @@ const UpdatePassword = () => {
         }
     }
 
-    if (EmailVerify) {
+    if (EmailVerify && EmailVerify !== undefined) {
         return (
             <div className='bg-gray-200 min-h-screen flex items-center justify-center py-10 px-4'>
                 <div className="max-w-2xl w-full bg-white p-10 rounded-2xl shadow-2xl border border-gray-300">
@@ -58,12 +59,12 @@ const UpdatePassword = () => {
                         <form onSubmit={headleUpdatePass} method="post">
                             <div className="">
                                 <DefultInput
-                                    label={"Enter Username"}
-                                    type={'text'}
-                                    name={'username'}
+                                    label={"Enter Email Address"}
+                                    type={'email'}
+                                    name={'email'}
                                     value={updatepass.email}
                                     required
-                                    placeholder={"Username"}
+                                    placeholder={"Email Address"}
                                     onChange={handleInputChange}
                                 />
                             </div>

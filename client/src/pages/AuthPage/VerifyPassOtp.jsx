@@ -2,6 +2,9 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import secureLocalStorage from 'react-secure-storage';
+import DefultInput from '../../components/Forms/DefultInput';
+import DefultButton from '../../components/Buttons/DefultButton';
+
 
 const VerifyPassOtp = () => {
     const navigate = useNavigate()
@@ -21,7 +24,7 @@ const VerifyPassOtp = () => {
     const headleVerifyOTP = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/forgetpass', passotyverfiy)
+            const res = await axios.post(import.meta.env.VITE_APP_API + '/auth/verifyotp', passotyverfiy)
                 .then(res => {
                     if (res.data.Status === "Success") {
                         alert(res.data.Message)

@@ -26,7 +26,7 @@ const Forgetpass = () => {
             .then(res => {
                 if(res.data.Status === 'Success'){
                     alert(res.data.Message)
-                    navigate('/', { replace: true })
+                    navigate('/VerifyPassOtp', { replace: true })
                 }
                 else{
                     alert(res.data.Error)
