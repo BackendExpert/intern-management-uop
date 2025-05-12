@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import secureLocalStorage from 'react-secure-storage';
 import { dashsidedata } from './DashSideMenu';
-import uoplogo from '../../assets/uoplogo.png'
-import userlogo from '../../assets/BlueUser.png'
+import uoplogo from '../../assets/uoplogo.png';
+import userlogo from '../../assets/BlueUser.png';
 
 const DashSide = () => {
     const [activeMenu, setActiveMenu] = useState(1);
@@ -12,7 +12,7 @@ const DashSide = () => {
 
     useEffect(() => {
         const savedMenu = localStorage.getItem('dashmenuID');
-        if (savedMenu) setActiveMenu(savedMenu);
+        if (savedMenu) setActiveMenu(Number(savedMenu));
     }, []);
 
     const handleMenuClick = (id) => {
@@ -20,14 +20,17 @@ const DashSide = () => {
         setActiveMenu(id);
     };
 
+    // Filter by user role
+    const filteredMenu = dashsidedata.filter(item => item.roles.includes(role));
+
     return (
         <div className="bg-white text-slate-800 min-h-screen p-6 shadow-md border-r border-gray-200
                 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-blue-100 hover:scrollbar-thumb-blue-600 transition-all duration-300">
 
             <div className="text-center mb-6">
-                {/* <h1 className="text-3xl font-extrabold text-sky-500 tracking-wide">UniExam Pro</h1> */}
-                <img src={uoplogo} alt="" />
+                <img src={uoplogo} alt="UOP Logo" />
             </div>
+
             <div className="text-center mb-6">
                 <h1 className="text-sm mt-2 font-extrabold text-sky-500 tracking-wide">Intern and Trainee Monitoring System</h1>
             </div>
@@ -45,7 +48,7 @@ const DashSide = () => {
             </div>
 
             <div className="space-y-2">
-                {dashsidedata.map((data, index) => (
+                {filteredMenu.map((data, index) => (
                     <Link to={data.link} key={index} className="block">
                         <div
                             onClick={() => handleMenuClick(data.id)}
@@ -61,7 +64,6 @@ const DashSide = () => {
                 ))}
             </div>
         </div>
-
     );
 };
 
