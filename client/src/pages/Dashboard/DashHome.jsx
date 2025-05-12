@@ -1,6 +1,7 @@
 import React from 'react'
 import useRoleGuard from '../../hooks/useRoleGuard'
 import secureLocalStorage from 'react-secure-storage'
+import AdminDirDash from './AdminDirDash'
 
 const DashHome = () => {
     const roleuser = secureLocalStorage.getItem('loginR')
@@ -9,12 +10,16 @@ const DashHome = () => {
 
     if (roleuser === 'director') {
         return (
-            <div>director</div>
+            <div>
+                <AdminDirDash />
+            </div>
         )
     }
     else if (roleuser === 'admin') {
         return (
-            <div>admin</div>
+            <div>
+                <AdminDirDash />
+            </div>
         )
     }
     else if (roleuser === 'security') {
