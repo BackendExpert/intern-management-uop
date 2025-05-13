@@ -82,9 +82,9 @@ const dashsidedata = [
     },
     {
         id: 10,
-        name: "Intern Certificates",
+        name: "Letters",
         icon: BsFileEarmarkCheck,
-        link: '/Dashboard/Certificates',
+        link: '/Dashboard/Letters',
         roles: ['intern', 'security', 'admin', 'director']
     },
     {

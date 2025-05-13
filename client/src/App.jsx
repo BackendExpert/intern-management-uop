@@ -11,6 +11,7 @@ import UpdatePassword from './pages/AuthPage/UpdatePassword'
 import PrivateRoute from './components/Auth/PriveteRoute'
 import Dashbaord from './components/Dashboard/Dashbaord'
 import DashHome from './pages/Dashboard/DashHome'
+import UnderDev from './components/Dashboard/UnderDev'
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
 
         <Route path='/Dashboard/' element={<PrivateRoute element={<Dashbaord /> } /> } >
           <Route path='Home' element={<PrivateRoute element={<DashHome /> } /> } />
+          <Route path='*' element={<PrivateRoute element={<UnderDev />} /> } />
         </Route>
         
       </Routes>
