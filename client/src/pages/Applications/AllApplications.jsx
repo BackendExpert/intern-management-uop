@@ -1,29 +1,19 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 
 const AllApplications = () => {
-    const applications = [
-        {
-            email: "jehan@123.com",
-            username: "jehan",
-            course: "BSc in IT",
-            institute: "SIBA",
-            status: "Accepted",
-        },
-        {
-            email: "sara@456.com",
-            username: "sara",
-            course: "MSc in Data Science",
-            institute: "UoP",
-            status: "Pending",
-        },
-        {
-            email: "alex@789.com",
-            username: "alex",
-            course: "BSc in CS",
-            institute: "NSBM",
-            status: "Rejected",
-        },
-    ];
+    const token = localStorage.getItem('login')
+    const [applicationdata, setapplicationdata] = useState([])
+
+    useEffect(() => {
+        axios.get(import.meta.env.VITE_APP_API + '/applications/allapplications', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(res => setapplicationdata(res.data.Result))
+            .catch(err => console.log(err))
+    }, [])
 
     const getStatusStyle = (status) => {
         switch (status) {
@@ -31,7 +21,7 @@ const AllApplications = () => {
                 return "text-green-600 bg-green-100";
             case "Rejected":
                 return "text-red-600 bg-red-100";
-            case "Pending":
+            case "pending":
                 return "text-yellow-600 bg-yellow-100";
             default:
                 return "";
@@ -47,23 +37,23 @@ const AllApplications = () => {
                         <tr className="bg-gray-100 text-gray-700 border-b">
                             <th className="py-3 px-4 font-semibold">#</th>
                             <th className="py-3 px-4 font-semibold">📧 Email</th>
-                            <th className="py-3 px-4 font-semibold">👤 Username</th>
+                            <th className="py-3 px-4 font-semibold">👤 NIC</th>
                             <th className="py-3 px-4 font-semibold">🎓 Course</th>
                             <th className="py-3 px-4 font-semibold">🏫 Institute</th>
                             <th className="py-3 px-4 font-semibold">📌 Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {applications.map((app, index) => (
+                        {applicationdata.map((app, index) => (
                             <tr
                                 key={index}
                                 className="border-b hover:bg-gray-50 transition duration-200"
                             >
                                 <td className="py-3 px-4">{index + 1}</td>
                                 <td className="py-3 px-4">{app.email}</td>
-                                <td className="py-3 px-4 capitalize">{app.username}</td>
+                                <td className="py-3 px-4 capitalize">{app.nic}</td>
                                 <td className="py-3 px-4">{app.course}</td>
-                                <td className="py-3 px-4">{app.institute}</td>
+                                <td className="py-3 px-4">{app.camups}</td>
                                 <td className="py-3 px-4">
                                     <span
                                         className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyle(app.status)}`}
