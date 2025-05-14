@@ -45,13 +45,13 @@ const dashsidedata = [
         link: '/Dashboard/Projects',
         roles: ['intern', 'staff', 'admin', 'director']
     },
-    {
-        id: 5,
-        name: "Evaluations",
-        icon: BsClipboardCheck,
-        link: '/Dashboard/Evaluations',
-        roles: ['intern', 'staff', 'security', 'admin', 'director']
-    },
+    // {
+    //     id: 5,
+    //     name: "Evaluations",
+    //     icon: BsClipboardCheck,
+    //     link: '/Dashboard/Evaluations',
+    //     roles: ['intern', 'staff', 'security', 'admin', 'director']
+    // },
     {
         id: 6,
         name: "Supervisors",
@@ -73,13 +73,13 @@ const dashsidedata = [
         link: '/Dashboard/Reports',
         roles: ['intern', 'staff', 'security', 'admin', 'director']
     },
-    {
-        id: 9,
-        name: "Time Tracking",
-        icon: BsClockHistory,
-        link: '/Dashboard/TimeTracking',
-        roles: ['intern', 'staff', 'admin', 'director']
-    },
+    // {
+    //     id: 9,
+    //     name: "Time Tracking",
+    //     icon: BsClockHistory,
+    //     link: '/Dashboard/TimeTracking',
+    //     roles: ['intern', 'staff', 'admin', 'director']
+    // },
     {
         id: 10,
         name: "Letters",
@@ -87,13 +87,13 @@ const dashsidedata = [
         link: '/Dashboard/Letters',
         roles: ['intern', 'security', 'admin', 'director']
     },
-    {
-        id: 11,
-        name: "Security Reports",
-        icon: BsShieldLock,
-        link: '/Dashboard/SecurityReports',
-        roles: ['security', 'admin', 'director']
-    },
+    // {
+    //     id: 11,
+    //     name: "Security Reports",
+    //     icon: BsShieldLock,
+    //     link: '/Dashboard/SecurityReports',
+    //     roles: ['security', 'admin', 'director']
+    // },
     {
         id: 12,
         name: "Announcements",
@@ -108,13 +108,13 @@ const dashsidedata = [
         link: '/Dashboard/Profile',
         roles: ['intern', 'staff', 'security', 'admin', 'director']
     },
-    {
-        id: 14,
-        name: "Settings",
-        icon: BsGearFill,
-        link: '/Dashboard/Settings',
-        roles: ['admin', 'director']
-    }
+    // {
+    //     id: 14,
+    //     name: "Settings",
+    //     icon: BsGearFill,
+    //     link: '/Dashboard/Settings',
+    //     roles: ['admin', 'director']
+    // }
 ];
 
 export { dashsidedata };
