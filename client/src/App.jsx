@@ -8,6 +8,10 @@ import SignIn from './pages/AuthPage/SignIn'
 import Forgetpass from './pages/AuthPage/Forgetpass'
 import VerifyPassOtp from './pages/AuthPage/VerifyPassOtp'
 import UpdatePassword from './pages/AuthPage/UpdatePassword'
+import PrivateRoute from './components/Auth/PriveteRoute'
+import Dashbaord from './components/Dashboard/Dashbaord'
+import DashHome from './pages/Dashboard/DashHome'
+import UnderDev from './components/Dashboard/UnderDev'
 
 function App() {
 
@@ -15,6 +19,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path='/testing' element={<HomePage /> } />
         <Route path='/' element={<SignIn /> } /> 
         <Route path='/SignUp' element={<SignUp /> } />
@@ -23,6 +28,12 @@ function App() {
         <Route path='/Forgetpass' element={<Forgetpass /> } />
         <Route path='/VerifyPassOtp' element={<VerifyPassOtp /> } />
         <Route path='/UpdatePassword' element={<UpdatePassword /> } />
+
+        <Route path='/Dashboard/' element={<PrivateRoute element={<Dashbaord /> } /> } >
+          <Route path='Home' element={<PrivateRoute element={<DashHome /> } /> } />
+          <Route path='*' element={<PrivateRoute element={<UnderDev />} /> } />
+        </Route>
+        
       </Routes>
     </BrowserRouter>
 
