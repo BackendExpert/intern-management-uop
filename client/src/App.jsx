@@ -12,6 +12,7 @@ import PrivateRoute from './components/Auth/PriveteRoute'
 import Dashbaord from './components/Dashboard/Dashbaord'
 import DashHome from './pages/Dashboard/DashHome'
 import UnderDev from './components/Dashboard/UnderDev'
+import ManageApplication from './pages/Applications/ManageApplication'
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
         <Route path='/Dashboard/' element={<PrivateRoute element={<Dashbaord /> } /> } >
           <Route path='Home' element={<PrivateRoute element={<DashHome /> } /> } />
           <Route path='*' element={<PrivateRoute element={<UnderDev />} /> } />
+          <Route path='Applications' element={<PrivateRoute element={<ManageApplication /> } /> } />
         </Route>
         
       </Routes>
