@@ -13,32 +13,7 @@ const ApplicationData = ({ btnclickvalue }) => {
             color: 'bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-600',
         },
 
-        {
-            id: 2,
-            name: 'Accepted Application',
-            value: 40,
-            icon: BsPersonLinesFill,
-            clickvalue: 'Accepted',
-            color: 'bg-gradient-to-r from-green-400 via-teal-500 to-green-600',
-        },
 
-        {
-            id: 3,
-            name: 'Reject Applications',
-            value: 40,
-            icon: BsFileText,
-            clickvalue: 'Reject',
-            color: 'bg-gradient-to-r from-pink-400 via-red-500 to-pink-600',
-        },
-
-        {
-            id: 4,
-            name: 'Pending Applications',
-            value: 40,
-            icon: MdFolderSpecial,
-            clickvalue: 'Pending',
-            color: 'bg-gradient-to-r from-blue-400 via-indigo-500 to-blue-600',
-        },
     ];
 
     const headleClick = (value) => {
@@ -46,7 +21,7 @@ const ApplicationData = ({ btnclickvalue }) => {
     }
 
     return (
-        <div className="grid xl:grid-cols-4 md:grid-cols-3 gap-4">
+        <div className="grid xl:grid-cols-3 md:grid-cols-3 gap-4">
             {dataapplication.map((data, index) => {
                 return (
                     <div
